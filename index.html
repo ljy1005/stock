@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>资金大管家</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
@@ -17,6 +17,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Micr
 .app{max-width:1440px;margin:0 auto;padding:20px}
 .mono{font-variant-numeric:tabular-nums}
 .muted{color:var(--muted)}
+
+/* 触控基础优化 */
+button,select,input{-webkit-tap-highlight-color:transparent}
+.btn,.tab,.icon,.chip-x,.th-x{touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.table-wrap{-webkit-overflow-scrolling:touch}
 
 .topbar{background:linear-gradient(120deg,#4f46e5,#7c3aed 55%,#9333ea);border-radius:20px;padding:18px 24px;color:#fff;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;box-shadow:0 10px 30px rgba(79,70,229,.28)}
 .brand{display:flex;align-items:center;gap:14px}
@@ -43,7 +48,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Micr
 
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:20px 0}
 .ov-card{background:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 4px 18px rgba(30,41,59,.06);display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;border-top:3px solid var(--c)}
-.ov-ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.ov-ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
 .ov-val{font-size:21px;font-weight:800;letter-spacing:.2px}
 .ov-lab{font-size:13px;color:var(--muted);margin-top:2px}
 .ov-sub{font-size:11px;color:var(--muted);margin-top:3px}
@@ -61,7 +66,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Micr
 .search:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.12)}
 select{border:1.5px solid var(--line);border-radius:11px;padding:9px 12px;font-size:13px;background:#fff;color:var(--ink);outline:none;cursor:pointer;max-width:200px}
 select:focus{border-color:var(--primary)}
-.count{font-size:13px;color:var(--muted);margin-left:auto;font-weight:600}
+.count{font-size:13px;color:var(--muted);margin-left:auto;font-weight:600;display:flex;align-items:center;gap:5px}
 
 .card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 4px 18px rgba(30,41,59,.06)}
 .card-title{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
@@ -96,7 +101,8 @@ tr.row-soon:hover{background:#fef3c7!important}
 
 .ops{display:flex;gap:6px}
 .icon{border:none;cursor:pointer;width:30px;height:30px;border-radius:9px;font-size:14px;display:inline-flex;align-items:center;justify-content:center;transition:.15s;background:#f1f5f9}
-.icon.edit:hover{background:#e0e7ff}
+.icon.edit{background:#fef9c3}
+.icon.edit:hover{background:#fde047;color:#854d0e}
 .icon.del:hover{background:#fee2e2}
 
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -122,6 +128,49 @@ tr.row-soon:hover{background:#fef3c7!important}
 .vb-val{font-size:11px;font-weight:700;color:var(--muted)}
 .vb-bar{width:100%;max-width:52px;border-radius:8px 8px 3px 3px;min-height:3px;transition:height .5s}
 .vb-label{font-size:11px;color:var(--muted);white-space:nowrap}
+
+.annual-hero{background:linear-gradient(120deg,#312e81,#4f46e5 45%,#7c3aed);color:#fff;border-radius:18px;padding:22px 26px;margin-bottom:16px;box-shadow:0 10px 30px rgba(79,70,229,.25)}
+.ah-title{font-size:15px;font-weight:700;opacity:.95;margin-bottom:18px}
+.ah-stats{display:flex;flex-wrap:wrap;align-items:stretch}
+.ah-stat{flex:1;min-width:180px;padding:0 24px}
+.ah-stat:first-child{padding-left:0}
+.ah-num{font-size:30px;font-weight:800;letter-spacing:.5px}
+.ah-num small{font-size:16px;font-weight:700;opacity:.85;margin-left:2px}
+.ah-lab{font-size:13px;opacity:.92;margin-top:6px;line-height:1.55}
+.ah-lab small{opacity:.75;font-size:11px}
+.ah-div{width:1px;background:rgba(255,255,255,.25);margin:4px 0}
+.ah-types{margin-top:18px;background:rgba(255,255,255,.13);border-radius:14px;padding:14px 16px}
+.ah-types-title{font-size:12px;opacity:.85;margin-bottom:10px;font-weight:600}
+.atr-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.atr-row:last-child{margin-bottom:0}
+.atr-label{width:110px;font-size:12px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.atr-track{flex:1;background:rgba(255,255,255,.18);border-radius:7px;height:16px;overflow:hidden}
+.atr-fill{height:100%;border-radius:7px;transition:width .5s}
+.atr-val{width:170px;font-size:12px;font-weight:700}
+.ah-note{font-size:11px;opacity:.72;margin-top:12px;line-height:1.6}
+
+.asof-box{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.asof-box b{color:var(--ink);font-size:16px}
+.rate-legend{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:-2px 0 14px}
+.mini-sel{border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-size:12px;background:#fff;color:var(--muted);max-width:170px;outline:none}
+.champ-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.ccard{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 3px 12px rgba(30,41,59,.06);border-top:3px solid var(--c)}
+.cc-lab{font-size:12px;color:var(--muted);font-weight:600}
+.cc-val{font-size:24px;font-weight:800;color:#16a34a;margin:4px 0 2px}
+.cc-bank{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl.ratetbl{min-width:900px}
+.th-term{text-align:center}
+.th-x{border:none;background:transparent;color:#cbd5e1;cursor:pointer;font-size:13px;line-height:1;padding:0 0 0 4px;vertical-align:1px}
+.th-x:hover{color:#dc2626}
+.rbank{font-weight:700;white-space:nowrap}
+.rcell{text-align:center;min-width:104px;cursor:pointer;transition:background .12s}
+.rcell:hover{background:#f1f5f9}
+.rval{font-size:15px;font-weight:700;color:var(--ink)}
+.rmax{background:linear-gradient(180deg,#fffbeb,#fde68a)}
+.rmax:hover{background:linear-gradient(180deg,#fff7dd,#fcd34d)}
+.rmax .rval{color:#b45309;font-weight:800}
+.rnote{font-size:11px;color:var(--muted);margin-top:3px;max-width:150px;margin-left:auto;margin-right:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rmax .rnote{color:#92400e}
 
 .remind-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:14px;color:var(--muted)}
 .remind-head b{color:var(--ink);font-size:16px}
@@ -166,11 +215,59 @@ tr.row-soon:hover{background:#fef3c7!important}
 .dict-add input:focus{border-color:var(--primary)}
 .dict-tip{padding:0 24px 6px;font-size:12px;color:var(--muted)}
 
+/* 版本信息 */
+.version-box{margin:26px auto 8px;max-width:860px;background:#fff;border-radius:16px;padding:16px 20px;box-shadow:0 3px 12px rgba(30,41,59,.05);font-size:12px;color:var(--muted)}
+.v-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--ink);font-weight:700;margin-bottom:10px}
+.v-tag{background:linear-gradient(120deg,var(--primary),var(--primary2));color:#fff;border-radius:8px;padding:2px 12px;font-size:12px;font-weight:800}
+.v-date{font-weight:500;color:var(--muted);font-size:11px}
+.v-item{display:flex;gap:8px;margin-bottom:8px;line-height:1.7}
+.v-item:last-child{margin-bottom:0}
+.v-ver{flex-shrink:0;font-weight:800;color:var(--primary)}
+
 .toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:#1e293b;color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.err{background:#dc2626}
-.footer{text-align:center;color:var(--muted);font-size:12px;padding:22px 0 8px}
-@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.charts-grid{grid-template-columns:1fr}.chart-card.wide{grid-column:span 1}.rcards{grid-template-columns:repeat(2,1fr)}.modal-body{grid-template-columns:1fr}.field.full{grid-column:span 1}.dict-grid{grid-template-columns:1fr}}
+.footer{text-align:center;color:var(--muted);font-size:12px;padding:14px 0 8px}
+
+/* 平板 */
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.charts-grid{grid-template-columns:1fr}.chart-card.wide{grid-column:span 1}.rcards{grid-template-columns:repeat(2,1fr)}.modal-body{grid-template-columns:1fr}.field.full{grid-column:span 1}.dict-grid{grid-template-columns:1fr}.ah-div{display:none}.ah-stat{padding:10px 0}}
+
+/* 手机 */
+@media(max-width:768px){
+  .app{padding:10px}
+  input,select,textarea{font-size:16px} /* 防 iOS 聚焦放大 */
+  .topbar{padding:14px;border-radius:16px;flex-direction:column;align-items:stretch;gap:12px}
+  .brand{justify-content:center}
+  .top-actions{justify-content:center;gap:8px}
+  .btn{padding:9px 13px;font-size:13px}
+  .tabs{position:sticky;top:0;z-index:40;background:var(--bg);margin:0 -10px 12px;padding:8px 10px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;padding:10px 16px}
+  .toolbar{flex-direction:column;align-items:stretch}
+  .toolbar .search{min-width:0;width:100%}
+  .toolbar select{max-width:none;width:100%}
+  .count{margin-left:0;justify-content:flex-end}
+  .stats-grid{gap:10px;margin:14px 0}
+  .ov-card{padding:12px;gap:10px}
+  .ov-val{font-size:16px}
+  .ov-ic{width:38px;height:38px;font-size:18px}
+  .ov-lab{font-size:12px}.ov-sub{font-size:10px}
+  .table-wrap{max-height:70vh}
+  table.tbl{font-size:12px}
+  .tbl th,.tbl td{padding:8px}
+  .icon{width:34px;height:34px}
+  .ah-stats{flex-direction:column;gap:14px}
+  .ah-stat{padding:0}
+  .ah-num{font-size:24px}
+  .champ-cards{grid-template-columns:1fr 1fr;gap:10px}
+  .cc-val{font-size:20px}
+  .rcards{grid-template-columns:1fr 1fr}
+  .modal{width:calc(100vw - 20px)}
+  .rcell{min-width:88px}
+  .rbank{min-width:78px}
+  .rate-legend{font-size:11px}
+  .version-box{padding:14px 16px}
+}
 </style>
 </head>
 <body>
@@ -183,8 +280,8 @@ tr.row-soon:hover{background:#fef3c7!important}
     <div class="top-actions">
       <div class="refdate"><span class="ref-label">提醒基准日</span><input type="date" id="refDateInput"><button class="btn ghost small" id="todayBtn">今天</button></div>
       <button class="btn primary" id="addBtn">＋ 新增</button>
-      <button class="btn ghost" id="importBtn">📥 导入Excel</button>
-      <button class="btn ghost" id="exportBtn">📤 导出Excel</button>
+      <button class="btn ghost" id="importBtn" title="支持双Sheet：存款数据 + 存款利率">📥 导入Excel</button>
+      <button class="btn ghost" id="exportBtn" title="导出双Sheet：存款数据 + 存款利率">📤 导出Excel</button>
       <button class="btn ghost" id="dictBtn">🏷️ 选项维护</button>
       <button class="btn ghost small" id="sampleBtn" title="重新生成随机示例数据">示例</button>
       <button class="btn ghost small danger" id="clearBtn" title="清空数据">清空</button>
@@ -198,17 +295,26 @@ tr.row-soon:hover{background:#fef3c7!important}
     <button class="tab active" data-tab="list">📋 数据列表</button>
     <button class="tab" data-tab="stats">📊 统计分析</button>
     <button class="tab" data-tab="remind">⏰ 到期提醒</button>
+    <button class="tab" data-tab="rates">💹 存款利率</button>
   </nav>
 
   <div class="panel">
     <div id="tab-list" class="tabpane active"></div>
     <div id="tab-stats" class="tabpane"></div>
     <div id="tab-remind" class="tabpane"></div>
+    <div id="tab-rates" class="tabpane"></div>
   </div>
-  <div class="footer">数据与选项库均保存在浏览器本地（localStorage） · 导入将替换当前数据 · 建议定期导出 Excel 备份</div>
+
+  <div class="version-box">
+    <div class="v-head"><span class="v-tag">V1.2</span>资金大管家 · 版本更新内容<span class="v-date">更新：2026-08-21</span></div>
+    <div class="v-item"><span class="v-ver">V1.2</span><span>① 新增「存款利率」对比页：银行×期限利率表、同档最高利率金色👑高亮、各期限冠军卡片、点按单元格编辑、银行/期限可增删维护；② Excel 升级为一个文件双 Sheet（存款数据＋存款利率）导出，导入自动识别两类 Sheet；③ 手机端全面适配：触控优化、加大点击热区、表格横向滑动、导航吸顶、弹窗与卡片重排；④ 底部新增版本号与更新日志。</span></div>
+    <div class="v-item"><span class="v-ver">V1.1</span><span>选项库后台维护（平台/渠道/类型下拉可增删）；存入时间＋期限自动计算到期时间；统计分析新增年化收益总览（平均年化率/年收益金额）。</span></div>
+    <div class="v-item"><span class="v-ver">V1.0</span><span>初始版本：数据列表增删改查、多维统计图表、到期提醒、Excel 导入导出、浏览器本地存储。</span></div>
+  </div>
+  <div class="footer">资金大管家 V1.2 · 数据保存在浏览器本地 · 建议定期导出 Excel 备份</div>
 </div>
 
-<!-- 新增/编辑弹窗 -->
+<!-- 新增/编辑记录弹窗 -->
 <div class="modal-mask" id="modalMask">
   <div class="modal">
     <div class="modal-head"><h3 id="modalTitle">新增记录</h3><button class="close" id="modalClose">×</button></div>
@@ -254,6 +360,49 @@ tr.row-soon:hover{background:#fef3c7!important}
   </div>
 </div>
 
+<!-- 银行利率编辑弹窗 -->
+<div class="modal-mask" id="rateRowMask" style="z-index:72">
+  <div class="modal" style="width:min(720px,95vw)">
+    <div class="modal-head"><h3 id="rateRowTitle">编辑银行利率</h3><button class="close" id="rateRowClose">×</button></div>
+    <div class="modal-body" id="rateRowBody"></div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button class="btn btn-cancel" id="rateRowCancel">取消</button>
+      <button class="btn solid" id="rateRowSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 单元格利率编辑弹窗 -->
+<div class="modal-mask" id="cellMask" style="z-index:73">
+  <div class="modal" style="width:min(420px,94vw)">
+    <div class="modal-head"><h3 id="cellTitle">编辑利率</h3><button class="close" id="cellClose">×</button></div>
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px">
+      <div class="field"><label>利率（%）</label><input id="cc_rate" type="number" step="0.01" placeholder="如 2.25"></div>
+      <div class="field"><label>备注</label><input id="cc_note" placeholder="如：1万元起 / 积分加息"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-cancel" id="cellClear">清空</button>
+      <span class="spacer"></span>
+      <button class="btn btn-cancel" id="cellCancel">取消</button>
+      <button class="btn solid" id="cellSave">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 期限管理弹窗 -->
+<div class="modal-mask" id="termMask" style="z-index:75">
+  <div class="modal" style="width:min(460px,94vw)">
+    <div class="modal-head"><h3>⚙️ 期限管理</h3><button class="close" id="termClose">×</button></div>
+    <div style="padding:20px 24px">
+      <div class="dict-tip" style="padding:0 0 10px">添加新期限或删除已有期限（也可在表头点 × 快速删除）。</div>
+      <div class="chips" id="termChips" style="max-height:260px"></div>
+      <div class="dict-add" style="margin-top:14px"><input id="termInput" placeholder="输入新期限，如：4年"><button class="btn solid small" id="termAddBtn">添加</button></div>
+    </div>
+    <div class="modal-foot"><span class="spacer"></span><button class="btn solid" id="termDone">完成</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -292,12 +441,10 @@ function SAMPLE(){
       金额:amount,利率:rate,期限:term,到期金额:maturityAmt,
       存入时间:fmtDate(start),到期时间:fmtDate(end),备注:isLock?'养老金':''});
   }
-  /* 固定分布：覆盖到期提醒各档位 */
   [-28,-12,-3,2,5,9,15,26,42,66,85,120,165,260,330,520,760,1050,1500].forEach(d=>addDeposit(d));
   for(let i=0;i<18;i++)addDeposit(ri(-20,1600));
   addDeposit(1600,'存款（不可动）','享定存5年期');
   addDeposit(1750,'存款（不可动）','享定存5年期');
-  /* 基金 / 理财 / 证券：无到期时间 */
   const funds=[['货币基金A','基金',1.25,'随时可赎回'],['沪深300指数','基金','',''],['医疗主题','基金','',''],
     ['消费主题','基金','',''],['中短债','基金',1.85,''],['零钱宝','理财',1.35,'随时可赎回'],
     ['朝朝盈','理财',1.5,'随时可赎回'],['活钱+','理财',1.68,''],['股票账户','证券',0.75,'月末逆回购']];
@@ -309,12 +456,45 @@ function SAMPLE(){
   return items;
 }
 
+/* ===================== 利率对比默认数据（来自 利率.xlsx） ===================== */
+function defaultRates(){
+  const terms=['活期','3月','6月','1年','2年','3年','5年'];
+  const seed=[
+    ['建设银行',{'3月':[0.8,'旺财2000元起'],'6月':[1,'旺财2000元起'],'1年':[1.1,'旺财2000元起'],'2年':[1.2,'旺财2000元起'],'3年':[1.55,'旺财5万元起'],'5年':[1.6,'旺财1万元起']}],
+    ['苏宁银行',{'活期':[1.2,''],'6月':[1.4,''],'1年':[1.9,'1.5%+0.4%全现金'],'2年':[2,'1万起'],'3年':[1.8,'']}],
+    ['上海银行',{'3月':[1.05,'3万元起'],'6月':[1.25,'3万元起'],'1年':[1.35,'3万元起'],'2年':[1.5,'3万元起'],'3年':[1.75,'']}],
+    ['中国银行',{'3月':[0.8,'5000元起'],'6月':[1,'5000元起'],'1年':[1.1,'5000元起'],'2年':[1.2,'5000元起'],'3年':[1.55,'5000元起'],'5年':[1.6,'5000元起']}],
+    ['招商银行',{'3月':[1,'1000元起'],'6月':[1.2,'1000元起'],'1年':[1.3,'1000元起'],'2年':[1.4,'1000元起'],'3年':[1.25,''],'5年':[1.3,'']}],
+    ['亿联银行',{'3月':[1.25,''],'6月':[1.45,''],'1年':[1.75,''],'2年':[2.2,'企业微信用户']}],
+    ['新网银行',{'活期':[1,''],'3月':[1.5,'1.1%+0.4%全现金'],'6月':[1.6,'1.3%+0.3%全现金'],'1年':[1.9,'1.5%+0.4%成长值'],'2年':[1.65,''],'3年':[2.18,'1.9%+成长值'],'5年':[2,'1.9%+成长值']}],
+    ['金城银行',{'2年':[1.6,''],'3年':[1.75,''],'5年':[1.7,'']}],
+    ['新安银行',{'3月':[1.45,''],'6月':[1.65,''],'1年':[1.85,''],'2年':[1.95,''],'3年':[2,'']}],
+    ['网商银行',{'3月':[1.1,''],'6月':[1.3,''],'1年':[1.5,''],'2年':[1.6,''],'3年':[1.6,'']}],
+    ['华通银行',{'3月':[1.3,''],'6月':[2,'1.5%+0.5%积分'],'1年':[2.1,'1.6%+0.5积分'],'2年':[1.7,''],'3年':[2.05,''],'5年':[2.1,'']}],
+    ['华瑞银行',{'3月':[1.45,''],'6月':[1.5,''],'2年':[1.9,''],'3年':[1.95,''],'5年':[2,'']}],
+    ['富民银行',{'3月':[1.2,''],'6月':[1.4,''],'1年':[1.55,'']}],
+    ['百信银行',{'3月':[1.2,''],'6月':[1.4,'1000元起'],'1年':[1.9,'1000元起'],'2年':[1.4,''],'3年':[2.2,'特邀限量']}],
+    ['中关村银行',{'3月':[1.2,''],'6月':[1.4,''],'1年':[1.6,''],'2年':[1.8,''],'3年':[2,'']}],
+    ['振兴银行',{'3月':[1.4,''],'6月':[1.5,''],'1年':[1.7,'']}],
+    ['工商银行',{'3月':[0.8,''],'6月':[1,''],'1年':[1.1,''],'2年':[1.2,''],'3年':[1.55,''],'5年':[1.6,'']}],
+    ['微众银行',{'3月':[1.1,''],'6月':[1.3,''],'1年':[1.5,''],'2年':[1.7,''],'3年':[1.6,''],'5年':[1.6,'']}],
+    ['客商银行',{'3月':[1.2,''],'6月':[1.5,''],'1年':[1.75,'5000元起'],'2年':[1.8,'1万元起']}],
+    ['众邦银行',{'活期':[1.5,'积分和券，10万元以内'],'3月':[2.25,'1.25%+1%成长值'],'6月':[2.55,'1.55%+1%成长值'],'1年':[2.65,'1.65%+1%成长值'],'3年':[3,'2%+1%成长值'],'5年':[3.05,'2.05%+1%成长值']}],
+    ['裕民银行',{'1年':[1.7,'1000元起']}],
+    ['蓝海银行',{}]
+  ];
+  const rows=seed.map(([bank,c])=>({bank,cells:Object.fromEntries(Object.entries(c).map(([t,v])=>[t,{r:v[0],n:v[1]}]))}));
+  return {asOf:'2026-08-05',terms,rows};
+}
+
 /* ===================== 全局状态 ===================== */
 let deposits=[], idCounter=0, editingId=null;
 let refDate=new Date(); refDate.setHours(0,0,0,0);
 let currentTab='list', searchTerm='', filterType='', filterPlatform='', sortBy='序号', sortDir=1;
 let DICT={type:[],platform:[],channel:[]};
+let RATES=null, editingRateIdx=null, editingCell=null, asOfEditing=false, rateSort='bank';
 const PALETTE=['#4f46e5','#0ea5e9','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6','#f97316','#84cc16','#06b6d4','#a855f7','#eab308','#64748b','#22c55e','#d946ef'];
+const CCOLORS=['#4f46e5','#0ea5e9','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899'];
 
 /* ===================== 工具函数 ===================== */
 function esc(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -421,6 +601,153 @@ function dictDel(k,val){
 function openDict(){renderDict();document.getElementById('dictMask').classList.add('show');}
 function closeDict(){document.getElementById('dictMask').classList.remove('show');}
 
+/* ===================== 利率数据管理 ===================== */
+function loadRates(){try{const s=localStorage.getItem('fundButlerRates');if(s){const d=JSON.parse(s);if(d&&d.terms&&d.rows){RATES=d;return;}}}catch(e){}RATES=defaultRates();}
+function saveRates(){try{localStorage.setItem('fundButlerRates',JSON.stringify(RATES));}catch(e){}}
+function getRate(row,term){const c=row.cells&&row.cells[term];if(!c||c.r===''||c.r==null)return null;const v=Number(c.r);return isNaN(v)?null:v;}
+function rateCell(row,ri,t,maxMap){
+  const v=getRate(row,t);
+  const c=(row.cells&&row.cells[t])||{};
+  const isMax=v!=null&&maxMap[t]!=null&&v===maxMap[t];
+  return `<td class="rcell ${isMax?'rmax':''}" data-act="cell" data-ri="${ri}" data-term="${esc(t)}" title="点击编辑">
+    ${v!=null?`<span class="rval">${v.toFixed(2)}%${isMax?' 👑':''}</span>`:'<span class="muted">—</span>'}
+    ${c.n?`<div class="rnote" title="${esc(c.n)}">${esc(c.n)}</div>`:''}
+  </td>`;
+}
+function renderRatesTab(){
+  const el=document.getElementById('tab-rates');
+  const maxMap={};
+  RATES.terms.forEach(t=>{let mx=null;RATES.rows.forEach(r=>{const v=getRate(r,t);if(v!=null&&(mx==null||v>mx))mx=v;});maxMap[t]=mx;});
+  let rows=RATES.rows.map((r,i)=>({...r,_i:i}));
+  if(rateSort!=='bank'){rows.sort((a,b)=>{const va=getRate(a,rateSort),vb=getRate(b,rateSort);if(va==null&&vb==null)return 0;if(va==null)return 1;if(vb==null)return -1;return vb-va;});}
+  const asofTxt=RATES.asOf&&parseDate(RATES.asOf)?fmtDate(parseDate(RATES.asOf)):'—';
+  const sortOpts=['<option value="bank">排序：银行顺序</option>'].concat(RATES.terms.map(t=>`<option value="${esc(t)}" ${rateSort===t?'selected':''}>排序：${esc(t)} 高→低</option>`)).join('');
+  el.innerHTML=`
+  <div class="toolbar">
+    <span class="asof-box">📅 数据截止：<b>${asofTxt}</b></span>
+    <button class="btn outline small" id="asofEditBtn">✏️ 改日期</button>
+    ${asOfEditing?`<input type="date" id="asOfInput" style="border:1.5px solid var(--line);border-radius:9px;padding:6px 10px;font-size:13px;outline:none" value="${esc(RATES.asOf||'')}">`:''}
+    <span class="spacer"></span>
+    <button class="btn solid small" id="addBankBtn">＋ 新增银行</button>
+    <button class="btn outline small" id="addTermBtn">＋ 新增期限</button>
+  </div>
+  <div class="rate-legend"><span>👑 金色高亮 = 该期限下最高利率 · 点击任意单元格可修改利率/备注 · 共 ${RATES.rows.length} 家银行 / ${RATES.terms.length} 个期限</span>
+    <span class="spacer"></span><select id="rateSortSel" class="mini-sel">${sortOpts}</select></div>
+  <div class="champ-cards">
+    ${RATES.terms.map((t,i)=>{
+      if(maxMap[t]==null)return'';
+      const w=RATES.rows.filter(r=>getRate(r,t)===maxMap[t]).map(r=>r.bank).join('、');
+      return`<div class="ccard" style="--c:${CCOLORS[i%CCOLORS.length]}">
+        <div class="cc-lab">${esc(t)} 最高</div>
+        <div class="cc-val mono">${maxMap[t].toFixed(2)}%</div>
+        <div class="cc-bank">${esc(w)}</div></div>`;}).join('')}
+  </div>
+  <div class="card" style="padding:12px"><div class="table-wrap" style="max-height:none">
+    <table class="tbl ratetbl">
+      <thead><tr><th>银行</th>${RATES.terms.map(t=>`<th class="th-term">${esc(t)}<button class="th-x" data-term="${esc(t)}" title="删除该期限">×</button></th>`).join('')}<th style="text-align:center">操作</th></tr></thead>
+      <tbody>
+      ${rows.length?rows.map(r=>`<tr data-ri="${r._i}">
+        <td class="rbank">${esc(r.bank)}</td>
+        ${RATES.terms.map(t=>rateCell(r,r._i,t,maxMap)).join('')}
+        <td class="ops">
+          <button class="icon edit" data-act="redit" data-ri="${r._i}" title="编辑整行">✏️</button>
+          <button class="icon del" data-act="rdel" data-ri="${r._i}" title="删除银行">🗑️</button>
+        </td></tr>`).join(''):'<tr><td colspan="'+(RATES.terms.length+2)+'" class="empty">暂无银行数据，点击右上角「新增银行」</td></tr>'}
+      </tbody>
+    </table>
+  </div></div>`;
+  document.getElementById('asofEditBtn').onclick=()=>{asOfEditing=true;renderRatesTab();};
+  const ai=document.getElementById('asOfInput');
+  if(ai){ai.focus();ai.onchange=e=>{RATES.asOf=e.target.value;saveRates();asOfEditing=false;renderRatesTab();toast('✅ 截止日期已更新');};}
+  document.getElementById('rateSortSel').onchange=e=>{rateSort=e.target.value;renderRatesTab();};
+  document.getElementById('addBankBtn').onclick=()=>openRateRow(-1);
+  document.getElementById('addTermBtn').onclick=openTermSet;
+  el.querySelector('thead').onclick=e=>{const x=e.target.closest('.th-x');if(x)delTerm(x.dataset.term);};
+  el.querySelector('tbody').onclick=e=>{
+    const btn=e.target.closest('button[data-act]');
+    if(btn){e.stopPropagation();const ri=+btn.dataset.ri;
+      if(btn.dataset.act==='rdel')deleteRateRow(ri);else openRateRow(ri);return;}
+    const cell=e.target.closest('td[data-act="cell"]');
+    if(cell){openCell(+cell.dataset.ri,cell.dataset.term);}
+  };
+}
+function openRateRow(idx){
+  editingRateIdx=idx;
+  const row=idx>=0?RATES.rows[idx]:{bank:'',cells:{}};
+  document.getElementById('rateRowTitle').textContent=idx>=0?'编辑银行利率':'新增银行';
+  let html=`<div class="field full"><label>银行名称 *</label><input id="rr_bank" value="${esc(row.bank)}" placeholder="如：众邦银行"></div>`;
+  RATES.terms.forEach((t,i)=>{
+    const c=(row.cells&&row.cells[t])||{};
+    html+=`<div class="field"><label>${esc(t)}</label>
+      <div class="field-row">
+        <input type="number" step="0.01" id="rr_r_${i}" value="${c.r==null?'':c.r}" placeholder="利率 %">
+        <input id="rr_n_${i}" value="${esc(c.n||'')}" placeholder="备注">
+      </div></div>`;
+  });
+  document.getElementById('rateRowBody').innerHTML=html;
+  document.getElementById('rateRowMask').classList.add('show');
+  document.getElementById('rr_bank').focus();
+}
+function closeRateRow(){document.getElementById('rateRowMask').classList.remove('show');editingRateIdx=null;}
+function saveRateRow(){
+  const bank=document.getElementById('rr_bank').value.trim();
+  if(!bank){toast('请输入银行名称','err');return;}
+  const cells={};
+  RATES.terms.forEach((t,i)=>{
+    const rv=document.getElementById('rr_r_'+i).value.trim();
+    const nv=document.getElementById('rr_n_'+i).value.trim();
+    if(rv!==''||nv!=='')cells[t]={r:rv===''?'':Number(rv),n:nv};
+  });
+  if(editingRateIdx>=0){RATES.rows[editingRateIdx]={bank,cells};toast('✅ 已保存');}
+  else{RATES.rows.push({bank,cells});toast('✅ 已新增银行');}
+  saveRates();closeRateRow();renderRatesTab();
+}
+function deleteRateRow(ri){const r=RATES.rows[ri];if(!r)return;
+  if(confirm(`确定删除银行「${r.bank}」的利率数据？`)){RATES.rows.splice(ri,1);saveRates();renderRatesTab();toast('🗑️ 已删除');}}
+function openCell(ri,term){
+  const row=RATES.rows[ri];if(!row)return;
+  editingCell={ri,term};
+  const c=(row.cells&&row.cells[term])||{};
+  document.getElementById('cellTitle').textContent=`${row.bank} · ${term}`;
+  document.getElementById('cc_rate').value=c.r==null?'':c.r;
+  document.getElementById('cc_note').value=c.n||'';
+  document.getElementById('cellMask').classList.add('show');
+  document.getElementById('cc_rate').focus();
+}
+function closeCell(){document.getElementById('cellMask').classList.remove('show');editingCell=null;}
+function saveCell(){
+  if(!editingCell)return;
+  const{ri,term}=editingCell;
+  const row=RATES.rows[ri];if(!row)return;
+  const rv=document.getElementById('cc_rate').value.trim();
+  const nv=document.getElementById('cc_note').value.trim();
+  if(!row.cells)row.cells={};
+  if(rv===''&&nv==='')delete row.cells[term];else row.cells[term]={r:rv===''?'':Number(rv),n:nv};
+  saveRates();closeCell();renderRatesTab();toast('✅ 已保存');
+}
+function clearCell(){
+  if(!editingCell)return;
+  const{ri,term}=editingCell;
+  const row=RATES.rows[ri];
+  if(row&&row.cells)delete row.cells[term];
+  saveRates();closeCell();renderRatesTab();toast('已清空该格');
+}
+function openTermSet(){renderTermChips();document.getElementById('termMask').classList.add('show');}
+function closeTermSet(){document.getElementById('termMask').classList.remove('show');}
+function renderTermChips(){
+  document.getElementById('termChips').innerHTML=RATES.terms.map(t=>`<span class="chip">${esc(t)}<button class="chip-x" data-term="${esc(t)}" title="删除期限">×</button></span>`).join('')||'<span class="muted" style="font-size:12px">（空）</span>';
+}
+function addTerm(v){v=(v||'').trim();if(!v){toast('请输入期限名称','err');return;}
+  if(RATES.terms.includes(v)){toast('期限已存在','err');return;}
+  RATES.terms.push(v);saveRates();renderTermChips();renderRatesTab();toast('✅ 已添加期限「'+v+'」');}
+function delTerm(t){
+  const used=RATES.rows.filter(r=>getRate(r,t)!=null).length;
+  if(!confirm(`确定删除期限「${t}」？${used?`\n该列有 ${used} 家银行的数据，将一并删除。`:''}`))return;
+  RATES.terms=RATES.terms.filter(x=>x!==t);
+  RATES.rows.forEach(r=>{if(r.cells)delete r.cells[t];});
+  if(rateSort===t)rateSort='bank';
+  saveRates();renderTermChips();renderRatesTab();toast('🗑️ 已删除期限');}
+
 /* ===================== 数据管理 ===================== */
 function assignIds(){deposits.forEach((d,i)=>d._id=i+1);idCounter=deposits.length;}
 function saveLocal(){try{localStorage.setItem('fundButlerData',JSON.stringify(deposits.map(({_id,...r})=>r)));}catch(e){}}
@@ -503,6 +830,61 @@ function hbars(el,data){if(!data.length){el.innerHTML='<div class="empty">暂无
   el.innerHTML=data.map(d=>`<div class="hb-row"><div class="hb-label" title="${esc(d.label)}">${esc(d.label)}</div><div class="hb-track"><div class="hb-fill" style="width:${d.value/max*100}%;background:${d.color}"></div></div><div class="hb-val mono">${fmtShort(d.value)}</div></div>`).join('');}
 function vbars(el,data){if(!data.length){el.innerHTML='<div class="empty">暂无数据</div>';return;}const max=Math.max(...data.map(d=>d.value),1);
   el.innerHTML=`<div class="vb-wrap">${data.map(d=>`<div class="vb-col"><div class="vb-val mono">${fmtShort(d.value)}</div><div class="vb-bar" style="height:${Math.max(d.value/max*100,2)}%;background:${d.color}"></div><div class="vb-label">${esc(d.label)}</div></div>`).join('')}</div>`;}
+
+function annualStats(){
+  let amtSum=0,rateAmt=0,income=0,cnt=0,totalAmt=0;
+  const byType={};
+  deposits.forEach(d=>{
+    const amt=Number(d.金额)||0;
+    totalAmt+=amt;
+    const r=Number(d.利率);
+    const hasRate=d.利率!==''&&d.利率!=null&&!isNaN(r)&&amt>0;
+    if(hasRate){
+      amtSum+=amt;rateAmt+=amt*r;income+=amt*r/100;cnt++;
+      const t=d.类型||'未分类';
+      if(!byType[t])byType[t]={amt:0,ra:0,inc:0};
+      byType[t].amt+=amt;byType[t].ra+=amt*r;byType[t].inc+=amt*r/100;
+    }
+  });
+  return{avgRate:amtSum?rateAmt/amtSum:0,income,cnt,amtSum,totalAmt,byType};
+}
+function renderAnnual(){
+  const el=document.getElementById('annualBox');
+  const s=annualStats();
+  if(!s.cnt){el.innerHTML='<div class="card" style="margin-bottom:16px"><div class="card-title">年化收益总览</div><div class="empty">暂无含利率的记录</div></div>';return;}
+  const types=Object.entries(s.byType).map(([t,v])=>({t,avg:v.ra/v.amt,inc:v.inc})).sort((a,b)=>b.avg-a.avg);
+  const maxR=Math.max(...types.map(x=>x.avg),0.01);
+  const cov=s.totalAmt?(s.amtSum/s.totalAmt*100).toFixed(1):'0.0';
+  el.innerHTML=`<div class="annual-hero">
+    <div class="ah-title">📌 年化收益总览</div>
+    <div class="ah-stats">
+      <div class="ah-stat">
+        <div class="ah-num mono">${s.avgRate.toFixed(2)}<small>%</small></div>
+        <div class="ah-lab">全部资金平均年化率<br><small>按金额加权 · 计入 ${s.cnt} 笔</small></div>
+      </div>
+      <div class="ah-div"></div>
+      <div class="ah-stat">
+        <div class="ah-num mono">¥${Math.round(s.income).toLocaleString('zh-CN')}</div>
+        <div class="ah-lab">年收益金额（预期利息）<br><small>月均 ¥${Math.round(s.income/12).toLocaleString('zh-CN')} · 日均 ¥${Math.round(s.income/365).toLocaleString('zh-CN')}</small></div>
+      </div>
+      <div class="ah-div"></div>
+      <div class="ah-stat">
+        <div class="ah-num mono">${fmtShort(s.amtSum)}</div>
+        <div class="ah-lab">计息本金<br><small>占总资产 ${fmtShort(s.totalAmt)} 的 ${cov}%</small></div>
+      </div>
+    </div>
+    <div class="ah-types">
+      <div class="ah-types-title">分类型平均年化率（利率越高条越长）</div>
+      ${types.map(x=>`<div class="atr-row">
+        <div class="atr-label">${esc(x.t)}</div>
+        <div class="atr-track"><div class="atr-fill" style="width:${(x.avg/maxR*100).toFixed(1)}%;background:${typeColor(x.t)}"></div></div>
+        <div class="atr-val mono">${x.avg.toFixed(2)}% ｜ 年收益 ${fmtShort(x.inc)}</div>
+      </div>`).join('')}
+    </div>
+    <div class="ah-note">口径说明：平均年化率 = Σ(金额×年化率) ÷ Σ(金额)；年收益金额 = Σ(金额×年化率)，即按当前利率持有满一年的预期利息；未填写利率的记录不参与统计。</div>
+  </div>`;
+}
+
 function renderStatsTab(){
   const el=document.getElementById('tab-stats');
   const byYear=(()=>{const m={};deposits.forEach(d=>{const md=parseDate(d.到期时间);if(md)m[md.getFullYear()]=(m[md.getFullYear()]||0)+(Number(d.金额)||0);});
@@ -510,7 +892,7 @@ function renderStatsTab(){
   const rb=[['<1%',0],['1-2%',0],['2-3%',0],['3-4%',0],['4-5%',0],['≥5%',0],['无利率',0]];
   deposits.forEach(d=>{const r=Number(d.利率);let i;if(d.利率===''||d.利率==null||isNaN(r))i=6;else if(r<1)i=0;else if(r<2)i=1;else if(r<3)i=2;else if(r<4)i=3;else if(r<5)i=4;else i=5;rb[i][1]+=Number(d.金额)||0;});
   const rateData=rb.map((b,i)=>({label:b[0],value:b[1],color:['#94a3b8','#06b6d4','#3b82f6','#10b981','#f59e0b','#ef4444','#e2e8f0'][i]})).filter(x=>x.value>0);
-  el.innerHTML=`<div class="charts-grid">
+  el.innerHTML=`<div id="annualBox"></div><div class="charts-grid">
     <div class="card chart-card"><div class="card-title">资产类型分布</div><div id="c_type"></div></div>
     <div class="card chart-card"><div class="card-title">平台 TOP 10（按本金）</div><div id="c_platform"></div></div>
     <div class="card chart-card"><div class="card-title">到期年份分布（按本金）</div><div id="c_year"></div></div>
@@ -518,6 +900,7 @@ function renderStatsTab(){
     <div class="card chart-card"><div class="card-title">渠道分布 TOP 10（按本金）</div><div id="c_channel"></div></div>
     <div class="card chart-card"><div class="card-title">平台明细汇总</div><div id="platformTable"></div></div>
   </div>`;
+  renderAnnual();
   doughnut(document.getElementById('c_type'),groupSum('类型',typeColor));
   hbars(document.getElementById('c_platform'),groupSum('平台').slice(0,10));
   vbars(document.getElementById('c_year'),byYear);
@@ -579,30 +962,169 @@ function deleteItem(id){const it=deposits.find(d=>d._id===id);if(!it)return;
 function calcMaturity(){const amt=num(document.getElementById('f_amount').value),rate=num(document.getElementById('f_rate').value),term=parseFloat(document.getElementById('f_term').value);
   if(amt&&rate&&term){document.getElementById('f_maturity').value=(amt*(1+rate/100*term/365)).toFixed(2);toast('🧮 已按单利估算');}else toast('请先填写金额、利率、期限','err');}
 
-/* ===================== Excel 导入导出 ===================== */
-function exportExcel(){if(typeof XLSX==='undefined'){toast('Excel 组件未加载（需联网）','err');return;}
-  const rows=deposits.map(d=>{const mi=maturityInfo(d);
+/* ===================== Excel 导入导出（双 Sheet） ===================== */
+function depExportRows(){
+  return deposits.map(d=>{const mi=maturityInfo(d);
     return{'序号':d.序号,'名称':d.名称,'平台':d.平台,'类型':d.类型,'渠道':d.渠道,'金额':num(d.金额),'利率':num(d.利率),'期限':d.期限,'到期金额':num(d.到期金额),
       '存入时间':parseDate(d.存入时间)?fmtDate(parseDate(d.存入时间)):'','到期时间':parseDate(d.到期时间)?fmtDate(parseDate(d.到期时间)):'',
       '到期提醒':mi?(mi.days<0?'已到期'+(-mi.days)+'天':mi.days+'天后到期'):'','备注':d.备注};});
-  const ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[{wch:6},{wch:22},{wch:22},{wch:14},{wch:16},{wch:12},{wch:8},{wch:12},{wch:12},{wch:12},{wch:12},{wch:14},{wch:26}];
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'资金');
-  XLSX.writeFile(wb,'资金大管家_'+toInputDate(new Date())+'.xlsx');toast('📤 已导出 Excel');}
-function importExcel(file){if(typeof XLSX==='undefined'){toast('Excel 组件未加载（需联网）','err');return;}
-  const reader=new FileReader();reader.onload=e=>{try{
+}
+function ratesAOA(){
+  const asofTxt=RATES.asOf&&parseDate(RATES.asOf)?fmtDate(parseDate(RATES.asOf)):(RATES.asOf||'');
+  const header=['银行'];
+  RATES.terms.forEach(t=>{header.push(t+'利率',t+'备注');});
+  header.push('数据截止'+(asofTxt?'：'+asofTxt:''));
+  const body=RATES.rows.map(r=>{
+    const line=[r.bank];
+    RATES.terms.forEach(t=>{
+      const c=(r.cells&&r.cells[t])||{};
+      line.push(c.r==null||c.r===''?'':Number(c.r), c.n||'');
+    });
+    line.push('');
+    return line;
+  });
+  return [header].concat(body);
+}
+function exportExcel(){
+  if(typeof XLSX==='undefined'){toast('Excel 组件未加载（需联网）','err');return;}
+  const wb=XLSX.utils.book_new();
+  const ws1=XLSX.utils.json_to_sheet(depExportRows());
+  ws1['!cols']=[{wch:6},{wch:22},{wch:22},{wch:14},{wch:16},{wch:12},{wch:8},{wch:12},{wch:12},{wch:12},{wch:12},{wch:14},{wch:26}];
+  XLSX.utils.book_append_sheet(wb,ws1,'存款数据');
+  const ws2=XLSX.utils.aoa_to_sheet(ratesAOA());
+  ws2['!cols']=[{wch:14}].concat(RATES.terms.map(()=>({wch:9},{wch:24}))).concat([{wch:16}]);
+  XLSX.utils.book_append_sheet(wb,ws2,'存款利率');
+  XLSX.writeFile(wb,'资金大管家_'+toInputDate(new Date())+'.xlsx');
+  toast('📤 已导出（存款数据 + 存款利率 两个Sheet）');
+}
+function findDepHeader(aoa){
+  for(let i=0;i<Math.min(aoa.length,6);i++){
+    const r=(aoa[i]||[]).map(c=>String(c||'').trim());
+    if(r.includes('名称')&&r.includes('金额'))return i;
+  }
+  return -1;
+}
+function findRateHeader(aoa){
+  for(let i=0;i<Math.min(aoa.length,6);i++){
+    const r=(aoa[i]||[]).map(c=>String(c||'').trim());
+    if(!r.includes('银行'))continue;
+    if(r.some(c=>/利率$/.test(c)))return i;
+    const nxt=(aoa[i+1]||[]).map(c=>String(c||''));
+    if(nxt.some(c=>c.includes('最高利率')))return i;
+  }
+  return -1;
+}
+function mapDepositAoa(aoa,hIdx){
+  const head=(aoa[hIdx]||[]).map(c=>String(c||'').trim());
+  const items=[];
+  for(let i=hIdx+1;i<aoa.length;i++){
+    const r=aoa[i]||[];
+    const get=k=>{const idx=head.indexOf(k);return idx>=0&&r[idx]!=null?r[idx]:'';};
+    const seq=String(get('序号')).trim(),name=String(get('名称')).trim();
+    if(seq==='序号'||name==='名称')continue;
+    const plat=String(get('平台')).trim(),amt=String(get('金额')).trim();
+    if(!name&&!plat&&!amt)continue;
+    items.push({序号:items.length+1,名称:get('名称'),平台:get('平台'),类型:get('类型'),渠道:get('渠道'),
+      金额:num(get('金额')),利率:num(get('利率')),期限:get('期限'),到期金额:num(get('到期金额')),
+      存入时间:parseDate(get('存入时间'))?fmtDate(parseDate(get('存入时间'))):'',
+      到期时间:parseDate(get('到期时间'))?fmtDate(parseDate(get('到期时间'))):'',备注:get('备注')});
+  }
+  return items;
+}
+function parseRateVal(v){
+  if(v==null)return'';
+  const s=String(v).trim();
+  if(s==='')return'';
+  const n=parseFloat(s.replace('%',''));
+  return isNaN(n)?'':n;
+}
+function parseRatesSheet(aoa){
+  if(!aoa||!aoa.length)return null;
+  const hIdx=findRateHeader(aoa);
+  if(hIdx<0)return null;
+  const row0=(aoa[hIdx]||[]).map(c=>String(c||'').trim());
+  const row1=(aoa[hIdx+1]||[]).map(c=>String(c||'').trim());
+  const isTwoRow=row1.some(c=>c.includes('最高利率'));
+  const cols=[];let asOf='';let dataStart;
+  if(isTwoRow){
+    let curTerm='';
+    row0.forEach((c,idx)=>{
+      if(idx===0)return;
+      if(c)curTerm=c;
+      const sub=row1[idx]||'';
+      if(sub.includes('利率'))cols.push({idx,term:curTerm,kind:'r'});
+      else if(sub.includes('备注'))cols.push({idx,term:curTerm,kind:'n'});
+    });
+    const last=row0[row0.length-1]||'';
+    const m=last.match(/(\d{6})\s*截止/);
+    if(m){const s=m[1];asOf='20'+s.slice(0,2)+'-'+s.slice(2,4)+'-'+s.slice(4,6);}
+    dataStart=hIdx+2;
+  }else{
+    row0.forEach((c,idx)=>{
+      if(idx===0)return;
+      let m=c.match(/^(.+?)利率$/);
+      if(m){cols.push({idx,term:m[1],kind:'r'});return;}
+      m=c.match(/^(.+?)备注$/);
+      if(m){cols.push({idx,term:m[1],kind:'n'});return;}
+      const dm=c.match(/数据截止[:：]?\s*(.+)/);
+      if(dm)asOf=dm[1].trim();
+    });
+    dataStart=hIdx+1;
+  }
+  const terms=[];cols.forEach(c=>{if(c.term&&!terms.includes(c.term))terms.push(c.term);});
+  const rows=[];
+  for(let i=dataStart;i<aoa.length;i++){
+    const r=aoa[i]||[];
+    const bank=String(r[0]||'').trim();
+    if(!bank||bank==='银行')continue;
+    const cells={};
+    cols.forEach(c=>{
+      const v=r[c.idx];
+      if(v==null||String(v).trim()==='')return;
+      if(!cells[c.term])cells[c.term]={r:'',n:''};
+      if(c.kind==='r')cells[c.term].r=parseRateVal(v);
+      else cells[c.term].n=String(v).trim();
+    });
+    rows.push({bank,cells});
+  }
+  if(!rows.length&&!terms.length)return null;
+  return{asOf,terms,rows};
+}
+function importExcel(file){
+  if(typeof XLSX==='undefined'){toast('Excel 组件未加载（需联网）','err');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{try{
     const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true});
-    const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
-    const items=rows.map((r,i)=>({序号:i+1,名称:r['名称']||'',平台:r['平台']||'',类型:r['类型']||'',渠道:r['渠道']||'',金额:num(r['金额']),利率:num(r['利率']),期限:r['期限']||'',到期金额:num(r['到期金额']),
-      存入时间:parseDate(r['存入时间'])?fmtDate(parseDate(r['存入时间'])):'',到期时间:parseDate(r['到期时间'])?fmtDate(parseDate(r['到期时间'])):'',备注:r['备注']||''}))
-      .filter(it=>it.名称||it.平台||it.金额);
-    if(!items.length){toast('未读取到有效数据','err');return;}
-    if(confirm(`读取到 ${items.length} 条记录，导入将替换当前数据。继续？`)){
-      deposits=items;assignIds();mergeDict(items);saveLocal();render();toast('📥 导入成功，共 '+items.length+' 条');}
-  }catch(err){toast('解析失败：'+err.message,'err');}};reader.readAsArrayBuffer(file);}
+    let depItems=null,rateParsed=null;
+    for(const name of wb.SheetNames){
+      const ws=wb.Sheets[name];
+      const aoa=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,defval:'',blankrows:false});
+      if(!aoa.length)continue;
+      if(findRateHeader(aoa)>=0){
+        if(!rateParsed)rateParsed=parseRatesSheet(aoa);
+      }else{
+        const dIdx=findDepHeader(aoa);
+        if(dIdx>=0&&!depItems)depItems=mapDepositAoa(aoa,dIdx);
+      }
+    }
+    const msg=[];
+    if(depItems&&depItems.length)msg.push('存款 '+depItems.length+' 条');
+    if(rateParsed&&rateParsed.rows.length)msg.push('利率 '+rateParsed.rows.length+' 家银行');
+    if(!msg.length){toast('未读取到有效数据','err');return;}
+    if(confirm(`读取到：${msg.join('、')}。\n导入将替换对应的当前数据，继续？`)){
+      if(depItems&&depItems.length){deposits=depItems;assignIds();mergeDict(deposits);}
+      if(rateParsed&&rateParsed.rows.length){
+        RATES={asOf:rateParsed.asOf||'',terms:rateParsed.terms.length?rateParsed.terms:['活期','3月','6月','1年','2年','3年','5年'],rows:rateParsed.rows};
+        if(!RATES.terms.includes(rateSort))rateSort='bank';
+      }
+      saveLocal();saveRates();render();toast('📥 导入成功（'+msg.join('、')+'）');
+    }
+  }catch(err){toast('解析失败：'+err.message,'err');}};
+  reader.readAsArrayBuffer(file);
+}
 
 /* ===================== 渲染调度 ===================== */
-function renderCurrentTab(){if(currentTab==='list')renderList();else if(currentTab==='stats')renderStatsTab();else renderRemind();}
+function renderCurrentTab(){if(currentTab==='list')renderList();else if(currentTab==='stats')renderStatsTab();else if(currentTab==='remind')renderRemind();else if(currentTab==='rates')renderRatesTab();}
 function render(){renderOverview();renderCurrentTab();}
 function switchTab(t){currentTab=t;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.remove('active'));document.getElementById('tab-'+t).classList.add('active');renderCurrentTab();}
@@ -610,7 +1132,7 @@ function syncRefInput(){document.getElementById('refDateInput').value=toInputDat
 
 /* ===================== 初始化 ===================== */
 function init(){
-  loadDict();
+  loadDict();loadRates();
   if(!loadLocal()){deposits=SAMPLE();assignIds();}
   mergeDict(deposits);
   syncRefInput();
@@ -643,8 +1165,27 @@ function init(){
     const add=e.target.closest('button[data-add]');if(add){const k=add.dataset.add;dictAdd(k,document.getElementById('dict-in-'+k).value);}});
   grid.addEventListener('keydown',e=>{
     if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.dictkey){e.preventDefault();dictAdd(e.target.dataset.dictkey,e.target.value);e.target.value='';}});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){
-    if(document.getElementById('dictMask').classList.contains('show'))closeDict();else closeModal();}});
+  document.getElementById('rateRowClose').onclick=closeRateRow;
+  document.getElementById('rateRowCancel').onclick=closeRateRow;
+  document.getElementById('rateRowSave').onclick=saveRateRow;
+  document.getElementById('rateRowMask').onclick=e=>{if(e.target.id==='rateRowMask')closeRateRow();};
+  document.getElementById('cellClose').onclick=closeCell;
+  document.getElementById('cellCancel').onclick=closeCell;
+  document.getElementById('cellSave').onclick=saveCell;
+  document.getElementById('cellClear').onclick=clearCell;
+  document.getElementById('cellMask').onclick=e=>{if(e.target.id==='cellMask')closeCell();};
+  document.getElementById('termClose').onclick=closeTermSet;
+  document.getElementById('termDone').onclick=closeTermSet;
+  document.getElementById('termMask').onclick=e=>{if(e.target.id==='termMask')closeTermSet();};
+  document.getElementById('termAddBtn').onclick=()=>{addTerm(document.getElementById('termInput').value);document.getElementById('termInput').value='';};
+  document.getElementById('termInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addTerm(e.target.value);e.target.value='';}});
+  document.getElementById('termChips').addEventListener('click',e=>{const x=e.target.closest('.chip-x');if(x)delTerm(x.dataset.term);});
+  document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;
+    if(document.getElementById('termMask').classList.contains('show'))closeTermSet();
+    else if(document.getElementById('cellMask').classList.contains('show'))closeCell();
+    else if(document.getElementById('rateRowMask').classList.contains('show'))closeRateRow();
+    else if(document.getElementById('dictMask').classList.contains('show'))closeDict();
+    else closeModal();});
   render();}
 init();
 </script>
